@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/prefer-as-const */
 import { defineModule, localActionContext } from "direct-vuex";
 import ServiceHelper from "@/service/ServiceHelper";
 import { AuthDTO } from 'api-axios/model';
