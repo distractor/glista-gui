@@ -31,4 +31,8 @@ export default {
 #nav {
   padding: 10px;
 }
+
+div {
+  padding: 10px;
+}
 </style>
