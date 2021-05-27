@@ -1,5 +1,5 @@
 <template>
-  <b-navbar fluid class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark" toggleable="lg">
+  <b-navbar fluid class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark" toggleable="md">
     <b-navbar-brand to="/">GLISTA scoring systems</b-navbar-brand>
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
