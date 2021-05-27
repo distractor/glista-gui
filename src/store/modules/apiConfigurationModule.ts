@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
+/* eslint-disable @typescript-eslint/prefer-as-const */
 import { defineModule } from "direct-vuex";
 import { Configuration } from "@/../api-axios/configuration"
 import { moduleGetterContext } from "@/store"
