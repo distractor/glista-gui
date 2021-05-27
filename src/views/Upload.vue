@@ -29,7 +29,7 @@ import Vue from "vue";
 import store from "@/store";
 import { EventGroupApi } from "@/../api-axios/api";
 import { EventGroupDTO } from 'api-axios/model';
-import ServiceHelper from '@/service/ServiceHelper';
+import ServiceHelper from '@/helpers/ServiceHelper';
 
 export default Vue.extend({
   data() {
