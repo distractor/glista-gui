@@ -1,22 +1,34 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <navigation-bar></navigation-bar>
+  <div class="flex-wrapper">
+    <div id="app">
+      <div id="nav">
+        <navigation-bar></navigation-bar>
+      </div>
+      <b-container style="padding-top:50px;">
+        <router-view />
+      </b-container>
     </div>
-    <b-container style="padding-top:50px;">
-      <router-view />
-    </b-container>
+    <div id="footer">
+      <b-container fluid class="sticky-bottom">
+        <b-row class="bg-light" align-h="end">
+          <AppFooter />
+        </b-row>
+      </b-container>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
+import Vue from "vue";
 import Navigation from "@/components/Navigation.vue";
+import AppFooter from "./components/layout/AppFooter.vue";
 
-export default {
+export default Vue.extend({
   components: {
-    'navigation-bar': Navigation
+    'navigation-bar': Navigation,
+    AppFooter: AppFooter,
   }
-}
+});
 </script>
 
 <style lang="scss">
@@ -32,7 +44,26 @@ export default {
   padding: 10px;
 }
 
-div {
+#footer {
+  bottom: 0;
+  width: 100%;
+}
+
+.text {
   padding: 10px;
+}
+
+.flex-wrapper {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+body {
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
 }
 </style>
