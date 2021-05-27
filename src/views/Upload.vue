@@ -7,13 +7,18 @@
         <b-spinner type="grow" label="Spinning"></b-spinner>
       </div>
       <div v-if="!loadingData">
-        <b-row>
-          <b-col sm="4">
-            <b-form-group id="event-group-selection" label="Event group:" label-for="event-group-select">
-              <b-form-select id="event-group-select" :options="listOfEventGroups" v-model="selectedEventGroup.id" text-field="name" value-field="id" @change="onSelectedEventGroupChange" v-if="!loadingEventGroups"></b-form-select>
-            </b-form-group>
-          </b-col>
-        </b-row>
+        <div v-if="allListsEmpty">
+          Sorry, I was unable to obtain data. Something seems to be wrong. <b-icon-emoji-frown></b-icon-emoji-frown>
+        </div>
+        <div v-else>
+          <b-row>
+            <b-col sm=" 4">
+              <b-form-group id="event-group-selection" label="Event group:" label-for="event-group-select">
+                <b-form-select id="event-group-select" :options="listOfEventGroups" v-model="selectedEventGroup.id" text-field="name" value-field="id" @change="onSelectedEventGroupChange" v-if="!loadingEventGroups"></b-form-select>
+              </b-form-group>
+            </b-col>
+          </b-row>
+        </div>
       </div>
     </b-container>
   </b-container>
@@ -55,6 +60,11 @@ export default Vue.extend({
       get(): boolean {
         return this.loadingEventGroups;
       },
+    },
+    allListsEmpty: {
+      get(): boolean {
+        return ServiceHelper.IsNullOrEmpty(this.listOfEventGroups)
+      }
     }
   },
 

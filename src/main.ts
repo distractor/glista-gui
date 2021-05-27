@@ -6,12 +6,16 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import { makeServer } from "./server";
+import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 
 Vue.config.productionTip = false
 
 if (process.env.NODE_ENV === 'development' && process.env.VUE_APP_USE_MOCK_API === 'true') {
   makeServer()
 }
+
+Vue.use(BootstrapVue)
+Vue.use(BootstrapVueIcons)
 
 new Vue({
   router,
