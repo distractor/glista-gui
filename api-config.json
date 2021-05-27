@@ -1,0 +1,6 @@
+{
+    "apiPackage": "api",
+    "modelPackage": "model",
+    "withSeparateModelsAndApi": true,
+    "enumNameSuffix": ""
+}
