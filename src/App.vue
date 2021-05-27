@@ -51,6 +51,7 @@ export default Vue.extend({
 
 .text {
   padding: 10px;
+  text-align: justify;
 }
 
 .flex-wrapper {

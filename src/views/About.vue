@@ -21,7 +21,7 @@
       Feel free to further develop any of the projects.
       <div class="text">
         <h2>Authors</h2>
-        <div class="text">Thanks to:
+        <div class="text">
           <ul>
             <li>Mitja Jančič
               <a href="mailto:mitjajancic@gmail.com">
@@ -34,7 +34,7 @@
           </ul>
         </div>
         <h2>Contributors</h2>
-        <div class="text">Thanks to:
+        <div class="text">
           <ul>
             <li>Tilen Ceglar
               <a href="https://github.com/tceglar">
