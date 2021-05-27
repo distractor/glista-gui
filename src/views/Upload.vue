@@ -79,6 +79,8 @@ export default Vue.extend({
 
         this.loadingEventGroups = true;
         const response = await this.eventGroupApi.apiEventGroupGetEventGroupsGet(enabled);
+        console.log(response);
+
         this.loadingEventGroups = false;
         console.log("have response.");
 
