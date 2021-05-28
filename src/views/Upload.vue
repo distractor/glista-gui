@@ -11,13 +11,22 @@
           Sorry, I was unable to obtain data. Something seems to be wrong. <b-icon-emoji-frown></b-icon-emoji-frown>
         </div>
         <div v-else>
+          <!-- Event group. -->
           <b-row>
-            <b-col sm=" 4">
-              <b-form-group id="event-group-selection" label="Event group:" label-for="event-group-select">
-                <b-form-select id="event-group-select" :options="listOfEventGroups" v-model="selectedEventGroup.id" text-field="name" value-field="id" @change="onSelectedEventGroupChange" v-if="!loadingEventGroups"></b-form-select>
-              </b-form-group>
+            <b-col>
+              <b-form inline>
+                <label class="mr-sm-2" for="event-group-select">Select event group:</label>
+                <b-form-select id="event-group-select" class="mb-2 mr-sm-2 mb-sm-0" :options="listOfEventGroups" v-model="selectedEventGroup.id" text-field="name" value-field="id" @change="onSelectedEventGroupChange" v-if="!loadingEventGroups"></b-form-select>
+                <label class="mr-sm-2" for="create-event-group-button">or</label>
+                <b-button @click="showAddNewEventGroup = !showAddNewEventGroup" variant="info">Create new</b-button>
+                <b-modal v-model="showAddNewEventGroup" size="md" title="Add new event group" centered header-bg-variant="light" ok-title="Add" ok-variant="info">
+                  <add-new-event-group-modal :eventGroupApi="eventGroupApi"></add-new-event-group-modal>
+                </b-modal>
+              </b-form>
             </b-col>
           </b-row>
+
+          <!-- Scoring -->
         </div>
       </div>
     </b-container>
@@ -29,11 +38,14 @@ import Vue from "vue";
 import store from "@/store";
 import { EventGroupApi } from "@/../api-axios/api";
 import { EventGroupDTO } from 'api-axios/model';
+import AddNewEventGroupModal from '@/components/dialogs/EventGroup/AddNewEventGroup.vue'
 import ServiceHelper from '@/helpers/ServiceHelper';
 
 export default Vue.extend({
   data() {
     return {
+      // Dialog booleans.
+      showAddNewEventGroup: false,
       // Parameters & variables.
       loadingEventGroups: true,
       errorMessage: "",
@@ -75,14 +87,9 @@ export default Vue.extend({
      */
     async loadEventGroups(enabled: boolean) {
       try {
-        console.log("entering");
-
         this.loadingEventGroups = true;
         const response = await this.eventGroupApi.apiEventGroupGetEventGroupsGet(enabled);
-        console.log(response);
-
         this.loadingEventGroups = false;
-        console.log("have response.");
 
         // Filter event groups..
         if (ServiceHelper.CheckResponseStatusCode(response.status)) {
@@ -92,7 +99,6 @@ export default Vue.extend({
           throw new Error(msg);
         }
       } catch (error) {
-        console.log("error");
         this.loadingEventGroups = false;
         const errTitle = "An error has occurred while loading event groups.";
         const errorDetails = ServiceHelper.GetErrorMessageFromApiError(error);
@@ -112,6 +118,9 @@ export default Vue.extend({
     onSelectedEventGroupChange() {
       this.selectedEventGroup = this.listOfEventGroups.find(eg => eg.id === this.selectedEventGroup.id) || {} as EventGroupDTO;
     }
+  },
+  components: {
+    'add-new-event-group-modal': AddNewEventGroupModal,
   }
 });
 </script>
