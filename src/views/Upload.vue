@@ -3,7 +3,7 @@
     <h1>Upload page</h1>
     <b-container>
       <div v-if="loadingData">
-        Please wait while data is loaded ...
+        Please wait while data is loading ...
         <b-spinner type="grow" label="Spinning"></b-spinner>
       </div>
       <div v-if="!loadingData">
@@ -18,10 +18,8 @@
                 <label class="mr-sm-2" for="event-group-select">Select event group:</label>
                 <b-form-select id="event-group-select" class="mb-2 mr-sm-2 mb-sm-0" :options="listOfEventGroups" v-model="selectedEventGroup.id" text-field="name" value-field="id" @change="onSelectedEventGroupChange" v-if="!loadingEventGroups"></b-form-select>
                 <label class="mr-sm-2" for="create-event-group-button">or</label>
-                <b-button @click="showAddNewEventGroup = !showAddNewEventGroup" variant="info">Create new</b-button>
-                <b-modal v-model="showAddNewEventGroup" size="md" title="Add new event group" centered header-bg-variant="light" ok-title="Add" ok-variant="info">
-                  <add-new-event-group-modal :eventGroupApi="eventGroupApi"></add-new-event-group-modal>
-                </b-modal>
+                <b-button @click="addNewEventGroupModalVisibility = !addNewEventGroupModalVisibility" variant="info">Create new</b-button>
+                <add-new-event-group-modal :modalVisible.sync="addNewEventGroupModalVisibility" :eventGroupApi="eventGroupApi" :newEventGroup="newEventGroup" @toggle-visibility="toggleAddNewEventGroupVisibility" @load-event-groups="loadEventGroups"></add-new-event-group-modal>
               </b-form>
             </b-col>
           </b-row>
@@ -37,19 +35,20 @@
 import Vue from "vue";
 import store from "@/store";
 import { EventGroupApi } from "@/../api-axios/api";
-import { EventGroupDTO } from 'api-axios/model';
-import AddNewEventGroupModal from '@/components/dialogs/EventGroup/AddNewEventGroup.vue'
+import { AddNewEventGroupDTO, EventGroupDTO } from 'api-axios/model';
+import AddNewEventGroupModal from '@/components/modals/EventGroup/AddNewEventGroup.vue';
 import ServiceHelper from '@/helpers/ServiceHelper';
 
 export default Vue.extend({
   data() {
     return {
-      // Dialog booleans.
-      showAddNewEventGroup: false,
+      // Modal booleans.
+      addNewEventGroupModalVisibility: false,
       // Parameters & variables.
       loadingEventGroups: true,
       errorMessage: "",
       selectedEventGroup: {} as EventGroupDTO,
+      newEventGroup: {} as AddNewEventGroupDTO,
 
       // APIs.
       eventGroupApi: {} as EventGroupApi,
@@ -57,6 +56,10 @@ export default Vue.extend({
       // Lists of entities.
       listOfEventGroups: [] as Array<EventGroupDTO>
     }
+  },
+
+  components: {
+    'add-new-event-group-modal': AddNewEventGroupModal,
   },
 
   created() {
@@ -112,15 +115,16 @@ export default Vue.extend({
       }
     },
 
+    async toggleAddNewEventGroupVisibility(visibility: boolean) {
+      this.addNewEventGroupModalVisibility = visibility;
+    },
+
     /**
      * Execute on selected event group.
      */
     onSelectedEventGroupChange() {
       this.selectedEventGroup = this.listOfEventGroups.find(eg => eg.id === this.selectedEventGroup.id) || {} as EventGroupDTO;
     }
-  },
-  components: {
-    'add-new-event-group-modal': AddNewEventGroupModal,
   }
 });
 </script>
