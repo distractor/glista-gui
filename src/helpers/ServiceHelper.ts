@@ -1,8 +1,22 @@
 import store from '@/store';
 import router from '@/router';
 import ErrorDetails from '@/models/ErrorDetails';
+import { Validation } from 'vuelidate';
+import { ValidationEvaluation, ValidationProperties } from 'vue/types/vue';
 
 export default class ServiceHelper {
+  /**
+ * Vuelidate Touch on given object.
+ * @param validation Validation object.
+ */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public static VuelidateTouch(validation: (Validation & ValidationProperties<any> & ValidationEvaluation) | undefined) {
+    // if use: "vetur.experimental.templateInterpolationService": true
+    if (validation != undefined) {
+      validation.$touch();
+    }
+  }
+
   /**
    * Check if current authentication status is valid - by bearer token and expire on.
    * @param token Bearer token.

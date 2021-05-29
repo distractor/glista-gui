@@ -4,10 +4,10 @@
       <b-form-group>
         <b-row>
           <b-col>
-            <b-form inline>
+            <b-form-group inline>
               <label class="mr-sm-2" for="event-group-select">Name:</label>
-              <b-form-input id="event-group-name" class="mb-2 mr-sm-2 mb-sm-0" placeholder="2021 SLO league" v-model="newEventGroup.name"></b-form-input>
-            </b-form>
+              <b-form-input id="event-group-name" class="mb-2 mr-sm-2 mb-sm-0" placeholder="2021 SLO league" v-model="newEventGroup.name" :state="!$v.newEventGroup.name.$invalid"></b-form-input>
+            </b-form-group>
           </b-col>
         </b-row>
       </b-form-group>
@@ -23,7 +23,7 @@
             <b-col>
               <b-form inline>
                 <label class="mr-sm-2" for="scoring-select">Select scoring:</label>
-                <b-form-select id="scoring-selector" class="mb-2 mr-sm-2 mb-sm-0" :options="listOfScorings" v-model="newEventGroup.scoringId" text-field="name" value-field="id" v-if="!loadingScorings"></b-form-select>
+                <b-form-select id="scoring-selector" class="mb-2 mr-sm-2 mb-sm-0" :options="listOfScorings" v-model="newEventGroup.scoringId" text-field="name" value-field="id" v-if="!loadingScorings" :state="!$v.newEventGroup.scoringId.$invalid"></b-form-select>
               </b-form>
             </b-col>
           </b-row>
@@ -47,6 +47,7 @@ import store from "@/store";
 import { EventGroupApi, ScoringApi } from "@/../api-axios/api";
 import { AddNewEventGroupDTO, ScoringDTO } from "api-axios/model";
 import ServiceHelper from "@/helpers/ServiceHelper";
+import { AddNewEventGroupDTOValidator } from '@/models/VuelidateValidators';
 
 export default Vue.extend({
   name: "AddNewEventGroupModal",
@@ -84,7 +85,15 @@ export default Vue.extend({
     this.loadScorings(true);
   },
 
+  validations: {
+    newEventGroup: AddNewEventGroupDTOValidator,
+  },
+
+
   methods: {
+    vuelidateTouch(validation: any) {
+      ServiceHelper.VuelidateTouch(validation);
+    },
     /**
      * Close modal and reload event groups.
      */
@@ -132,18 +141,29 @@ export default Vue.extend({
       }
     },
 
+    /**
+     * Add new event group.
+     */
     async addNewEventGroup() {
       // Validate all fields.
-      // this.$v.$touch();
+      this.$v.$touch();
+      console.log(this.$v);
+
+
       // Invalid, becomes true when a validations return false.
-      // const isValid = !this.$v.$invalid;
-      // if (!isValid) {
-      //   this.errorMessage = "Check input fields and fill with valid values.";
-      //   this.$toast.add({ severity: "error", summary: "Fill form correctly", detail: this.errorMessage, life: 3000 });
-      //   return;
-      // } else {
-      //   this.errorMessage = "";
-      // }
+      const isValid = !this.$v.$invalid;
+      if (!isValid) {
+        this.errorMessage = "Check input fields and fill with valid values.";
+        this.$bvToast.toast(this.errorMessage, {
+          title: 'Error',
+          variant: 'danger',
+          solid: true,
+          autoHideDelay: 5000
+        })
+        return;
+      } else {
+        this.errorMessage = "";
+      }
 
       // Go to API endpoint.
       try {
