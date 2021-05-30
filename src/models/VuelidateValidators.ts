@@ -14,3 +14,18 @@ export const AddNewEventGroupDTOValidator = {
         required,
     }
 };
+
+/**
+ * Add new scoring DTO validator.
+ */
+export const AddNewScoringDTOValidator = {
+    name: {
+        required,
+    },
+    type: {
+        required,
+    },
+    tables: {
+        required,
+    }
+};

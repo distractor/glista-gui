@@ -19,7 +19,7 @@
                 <b-form-select id="event-group-select" class="mb-2 mr-sm-2 mb-sm-0" :options="listOfEventGroups" v-model="selectedEventGroup.id" text-field="name" value-field="id" @change="onSelectedEventGroupChange" v-if="!loadingEventGroups"></b-form-select>
                 <label class="mr-sm-2" for="create-event-group-button">or</label>
                 <b-button @click="addNewEventGroupModalVisibility = !addNewEventGroupModalVisibility" variant="info">Create new</b-button>
-                <add-new-event-group-modal :modalVisible.sync="addNewEventGroupModalVisibility" :eventGroupApi="eventGroupApi" :newEventGroup="newEventGroup" @toggle-visibility="toggleAddNewEventGroupVisibility" @load-event-groups="loadEventGroups"></add-new-event-group-modal>
+                <add-new-event-group-modal :modalVisible.sync="addNewEventGroupModalVisibility" :eventGroupApi="eventGroupApi" :newEventGroup="newEventGroup" @toggle-visibility="toggleAddNewEventGroupVisibility" @load-event-groups="loadEventGroups" @clear-new-event-group="clearNewEventGroupObject"></add-new-event-group-modal>
               </b-form>
             </b-col>
           </b-row>
@@ -115,6 +115,16 @@ export default Vue.extend({
       }
     },
 
+    /**
+     * Clears new event group object.
+     */
+    clearNewEventGroupObject() {
+      this.newEventGroup = {} as AddNewEventGroupDTO;
+    },
+
+    /**
+     * Toggle add new event group visibility.
+     */
     async toggleAddNewEventGroupVisibility(visibility: boolean) {
       this.addNewEventGroupModalVisibility = visibility;
     },

@@ -2,25 +2,33 @@
   <b-modal :visible.sync="modalVisible" size="md" title="Add new event group" centered header-bg-variant="light" ok-title="Add" ok-variant="info" @hide="hideModal()">
     <b-container fluid>
       <b-form>
-        <b-form-group>
+        <!-- Event group name. -->
+        <b-form-group inline>
           <label class="mr-sm-2" for="event-group-select">Name:</label>
           <b-form-input id="event-group-name" class="mb-2 mr-sm-2 mb-sm-0" placeholder="2021 SLO league" v-model="newEventGroup.name" :state="!$v.newEventGroup.name.$invalid" aria-describedby="event-group-name-feedback"></b-form-input>
           <b-form-invalid-feedback id="event-group-name-feedback">This is a required field.</b-form-invalid-feedback>
         </b-form-group>
-        <div v-if="loadingScorings">
-          Please wait while data is loading ...
-          <b-form-group>
+
+        <!-- Event group scoring. -->
+        <b-form-group inline>
+          <div v-if="loadingScorings">
+            Please wait while data is loading ...
             <b-spinner type="grow" label="Spinning"></b-spinner>
-          </b-form-group>
-        </div>
-        <div v-else>
-          <b-form-group>
-            <label class="mr-sm-2" for="scoring-select">Select scoring:</label>
-            <b-form-select id="scoring-selector" class="mb-2 mr-sm-2 mb-sm-0" :options="listOfScorings" v-model="newEventGroup.scoringId" text-field="name" value-field="id" v-if="!loadingScorings" :state="!$v.newEventGroup.scoringId.$invalid" @change="onSelectedScoringChange" aria-describedby="event-group-scoringid-feedback"></b-form-select>
-            <b-form-invalid-feedback id="event-group-scoringid-feedback">This is a required field.</b-form-invalid-feedback>
-          </b-form-group>
-        </div>
+          </div>
+          <div v-else>
+            <b-form inline>
+              <label class="mr-sm-2" for="scoring-select">Select scoring:</label>
+              <b-form-select id="scoring-selector" class="mb-2 mr-sm-2 mb-sm-0" :options="listOfScorings" v-model="newEventGroup.scoringId" text-field="name" value-field="id" v-if="!loadingScorings" :state="!$v.newEventGroup.scoringId.$invalid" @change="onSelectedScoringChange" aria-describedby="event-group-scoringid-feedback"></b-form-select>
+              <label class="mr-sm-2" for="scoring-select">or</label>
+              <b-button @click="addNewScoringModalVisibility = !addNewScoringModalVisibility" variant="info">Create new</b-button>
+              <add-new-scoring :modalVisible.sync="addNewScoringModalVisibility" :scoringApi="scoringApi" :newScoring="newScoring" @toggle-visibility="toggleAddNewScoringVisibility" @load-scorings="loadScorings" @clear-new-scoring-object="clearNewScoringObject"></add-new-scoring>
+              <b-form-invalid-feedback id="event-group-scoringid-feedback">This is a required field.</b-form-invalid-feedback>
+            </b-form>
+          </div>
+        </b-form-group>
       </b-form>
+
+      <!-- Scoring details card. -->
       <div v-if="!isNullOrEmpty(newEventGroup.scoringId)">
         <b-card header="Selected scoring details">
           <b-card-text>
@@ -69,9 +77,10 @@
 import Vue from "vue";
 import store from "@/store";
 import { EventGroupApi, ScoringApi } from "@/../api-axios/api";
-import { AddNewEventGroupDTO, ScoringDTO } from "api-axios/model";
+import { AddNewEventGroupDTO, AddNewScoringDTO, ScoringDTO } from "api-axios/model";
 import ServiceHelper from "@/helpers/ServiceHelper";
 import { AddNewEventGroupDTOValidator } from '@/models/VuelidateValidators';
+import AddNewScoring from "../Scoring/AddNewScoring.vue";
 
 export default Vue.extend({
   name: "AddNewEventGroupModal",
@@ -81,14 +90,20 @@ export default Vue.extend({
       loadingScorings: true,
       addingNewEventGroup: false,
       eventGroupAdded: false,
+      addNewScoringModalVisibility: false,
       errorMessage: "",
       selectedScoring: {} as ScoringDTO,
+      newScoring: {} as AddNewScoringDTO,
 
       // Lists.
       listOfScorings: [] as Array<ScoringDTO>,
       // APIs.
       scoringApi: {} as ScoringApi,
     }
+  },
+
+  components: {
+    'add-new-scoring': AddNewScoring,
   },
 
   props: {
@@ -114,8 +129,22 @@ export default Vue.extend({
     newEventGroup: AddNewEventGroupDTOValidator,
   },
 
-
   methods: {
+    /**
+     * Clears new scoring object.
+     */
+    clearNewScoringObject() {
+      this.newScoring = {} as AddNewScoringDTO;
+    },
+
+    /**
+     * Toggle add new scoring modal visibility.
+     * @param Visibility.
+     */
+    async toggleAddNewScoringVisibility(visibility: boolean) {
+      this.addNewScoringModalVisibility = visibility;
+    },
+
     /**
      * Is null or empty helper.
      */
@@ -142,6 +171,14 @@ export default Vue.extend({
      * Execute on hide modal.
      */
     hideModal() {
+      this.loadingScorings = false;
+      this.addingNewEventGroup = false;
+      this.eventGroupAdded = false;
+      this.addNewScoringModalVisibility = false;
+      this.errorMessage = "";
+      this.selectedScoring = {} as ScoringDTO;
+      this.newScoring = {} as AddNewScoringDTO;
+      this.$emit("clear-new-event-group");
       this.$emit("toggle-visibility", false);
     },
 
@@ -183,8 +220,6 @@ export default Vue.extend({
     async addNewEventGroup() {
       // Validate all fields.
       this.$v.$touch();
-      console.log(this.$v);
-
 
       // Invalid, becomes true when a validations return false.
       const isValid = !this.$v.$invalid;
