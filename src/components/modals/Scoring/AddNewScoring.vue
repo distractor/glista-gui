@@ -18,14 +18,14 @@
 
         <!-- Tables. -->
         <b-form-group inline>
-          <label class="mr-sm-2" for="type-select">Scoring tables:</label>
-          <b-form-checkbox-group v-model="newScoring.tables" :options="scoringTables" class="mb-3" :state="!$v.newScoring.tables.$invalid" aria-describedby="scoring-table-feedback"></b-form-checkbox-group>
+          <label class="mr-sm-2" for="table-select">Scoring tables:</label>
+          <b-form-checkbox-group id="table-selector" v-model="newScoring.tables" :options="scoringTables" class="mb-3" :state="!$v.newScoring.tables.$invalid" aria-describedby="scoring-table-feedback"></b-form-checkbox-group>
           <b-form-invalid-feedback id="scoring-table-feedback">This is a required field.</b-form-invalid-feedback>
         </b-form-group>
 
         <!-- Nationalities. -->
         <b-form-group inline>
-          <label class="mr-sm-2" for="type-select">Nationalities:</label>
+          <label class="mr-sm-2" for="nation-add">Nationalities:</label>
           <ul>
             <li v-for="nation in newScoring.nationalities" :key="nation">{{nation}}</li>
           </ul>
@@ -37,9 +37,9 @@
           </b-input-group>
         </b-form-group>
 
-        <!-- POints. -->
+        <!-- Points. -->
         <b-form-group inline>
-          <label class="mr-sm-2" for="type-select">Points:</label>
+          <label class="mr-sm-2" for="point-add">Points:</label>
           <ul>
             <li v-for="(point, index) in newScoring.points" :key="point">rank: {{index + 1}}. -> points: {{point}}</li>
           </ul>
